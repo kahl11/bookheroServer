@@ -10,8 +10,8 @@ import json
 mydb = mysql.connector.connect(
     host="localhost",
     user="kevin",
-    password="wa2wahUs",
-    database="bookheroes"
+    password="",
+    database=""
     )
 
 app = Flask(__name__)
