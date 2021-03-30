@@ -9,6 +9,7 @@ import urllib.parse
 import json
 import parameters
 import sys
+import os
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -72,4 +73,20 @@ def getUserData():
     mycursor.execute(sql,(token,))
     result = mycursor.fetchall()
     return(json.dumps({"username":result[0][0], "email":result[0][1], "school":result[0][2]}))
+
+@app.route('/getPostData', methods=['POST'])
+def getPostData():
+    data = request.data
+    print(data)
+    if "id" in data.decode():
+        id = request.json.get("id")
+        print(id)
+        return str(id)
+    return ""
+    
+@app.route('/sendImage', methods=['POST'])
+def postImage():
+    file = request.files['file']
+    filename = (file.filename)
+    file.save(os.path.join(app.config['upload_folder'], filename))
 app.run()
