@@ -1,3 +1,3 @@
-mysql_username = ""
-mysql_password = ""
-mysql_database= ""
+mysql_username = "kevin"
+mysql_password = "wa2wahUs"
+mysql_database= "bookheroes"

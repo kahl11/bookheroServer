@@ -10,6 +10,8 @@ import json
 import parameters
 import sys
 import os
+import pprint
+from flask_cors import CORS, cross_origin
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -19,6 +21,7 @@ mydb = mysql.connector.connect(
     )
 
 app = Flask(__name__)
+CORS(app,supports_credentials=True)
 app.config["DEBUG"] = True
 mycursor = mydb.cursor()
 
@@ -83,10 +86,26 @@ def getPostData():
         print(id)
         return str(id)
     return ""
-    
+
 @app.route('/sendImage', methods=['POST'])
 def postImage():
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        print('No file part')
+        return json.dumps({"status":"NO_FILE"})
     file = request.files['file']
-    filename = (file.filename)
-    file.save(os.path.join(app.config['upload_folder'], filename))
-app.run()
+        # if user does not select file, browser also
+        # submit an empty part without filename
+    if file.filename == '':
+        print('No selected file')
+        return json.dumps({"status":"NO_FILENAME"})
+    if file.filename.split(".")[1] in ALLOWED_EXTENSIONS:
+        filename = file.filename
+        file.save(os.path.join('./Images/', filename))
+        return json.dumps({"status":"success"})
+    else:
+        return json.dumps({"status" : "EXTENSION_BLOCKED"})
+    return json.dumps({"status":"FAIL"})
+if __name__ == "__main__":
+    app.run()
